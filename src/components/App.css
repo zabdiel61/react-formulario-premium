@@ -1,0 +1,5 @@
+/* CSS personalizado */
+.img-container {
+  max-width: 125px; /* Ajusta el tamaño según tus necesidades */
+  height: auto;
+}
