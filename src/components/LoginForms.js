@@ -10,25 +10,29 @@ export default class LoginForm extends React.Component {
       nombre: '',
       nombreComercial: '',
       direccion: '',
-      municipio: 1,
-      activoEconomico: 1,
-      tipoDocumento: 1,
+      municipio: null,
+      activoEconomico: null,
+      tipoDocumento: null,
       numDoc: '',
       telefono: '',
       email: '',
-      tipoFactura: '',
-      estado: '',
+      tipoFactura: 'FAC',
+      estado: 'ACT',
       ncr: '',
-      jdeNum: 10034,
+      jdeNum: null,
       onLogin: props.onLogin,
       onRegister: props.onRegister,
+      showFields: false,
     };
   }
 
   onChangeHandler = (event) => {
-    let name = event.target.name;
-    let value = event.target.value;
-    this.setState({ [name]: value });
+    const { name, value } = event.target;
+    if (name === 'tipoFactura') {
+      this.setState({ tipoFactura: value, showFields: value === 'CRF' });
+    } else {
+      this.setState({ [name]: value });
+    }
   };
 
   onSubmitLogin = (e) => {
@@ -45,6 +49,11 @@ export default class LoginForm extends React.Component {
       this.state.municipio,
       this.state.numDoc,
       this.state.telefono,
+      this.state.email,
+      this.state.tipoDocumento,
+      this.state.tipoFactura,
+      this.state.activoEconomico,
+      this.state.ncr,
       this.state.jdeNum
     );
   };
@@ -209,6 +218,24 @@ export default class LoginForm extends React.Component {
                 </div>
 
                 <div className="form-outline mb-4">
+                  <select
+                    id="tipoDocumento"
+                    name="tipoDocumento"
+                    className="form-select"
+                    onChange={this.onChangeHandler}
+                  >
+                    <option value="" disabled selected>
+                      Tipo de Documento
+                    </option>
+                    <option value="1">DUI</option>
+                    <option value="2">NIT</option>
+                  </select>
+                  <label className="form-label" htmlFor="selectOption">
+                    Selecciona una opción
+                  </label>
+                </div>
+
+                <div className="form-outline mb-4">
                   <input
                     type="text"
                     id="numDoc"
@@ -259,6 +286,76 @@ export default class LoginForm extends React.Component {
                     Numero JDE
                   </label>
                 </div>
+
+                <div className="form-outline mb-4">
+                  <label className="form-label mb-2">
+                    ¿Qué tipo de documento desea?
+                  </label>
+                  <div>
+                    <input
+                      type="radio"
+                      id="factura"
+                      name="tipoFactura"
+                      value="FAC"
+                      checked={this.state.tipoFactura === 'FAC'}
+                      onChange={this.onChangeHandler}
+                    />
+                    <label className="form-check-label" htmlFor="factura">
+                      Factura
+                    </label>
+                  </div>
+                  <div>
+                    <input
+                      type="radio"
+                      id="creditoFiscal"
+                      name="tipoFactura"
+                      value="CRF"
+                      checked={this.state.tipoFactura === 'CRF'}
+                      onChange={this.onChangeHandler}
+                    />
+                    <label className="form-check-label" htmlFor="creditoFiscal">
+                      Credito Fiscal
+                    </label>
+                  </div>
+                </div>
+
+                {this.state.showFields && (
+                  <>
+                    {/* Campo activoEconomico */}
+                    <div className="form-outline mb-4">
+                      <select
+                        id="activoEconomico"
+                        name="activoEconomico"
+                        className="form-select"
+                        onChange={this.onChangeHandler}
+                      >
+                        <option value="" disabled selected>
+                          Selecciona el Activo Económico
+                        </option>
+                        <option value="1">Activo Económico 1</option>
+                        <option value="1">Activo Económico 2</option>
+                        {/* Agrega más opciones según sea necesario */}
+                      </select>
+                      <label className="form-label" htmlFor="activoEconomico">
+                        Activo Económico
+                      </label>
+                    </div>
+
+                    {/* Campo ncr */}
+                    <div className="form-outline mb-4">
+                      <input
+                        type="text"
+                        id="ncr"
+                        name="ncr"
+                        className="form-control"
+                        onChange={this.onChangeHandler}
+                      />
+                      <label className="form-label" htmlFor="ncr">
+                        NCR
+                      </label>
+                    </div>
+                  </>
+                )}
 
                 <button
                   type="submit"

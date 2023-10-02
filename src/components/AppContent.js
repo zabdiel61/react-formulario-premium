@@ -31,6 +31,7 @@ export default class AppContent extends React.Component {
     })
       .then((response) => {
         setAuthHeader(response.data.token);
+        this.setState({ numDoc: response.data.numDoc });
         this.setState({ componentToShow: 'messages' });
       })
       .catch((error) => {
@@ -46,7 +47,14 @@ export default class AppContent extends React.Component {
     nombreComercial,
     direccion,
     municipio,
-    numDoc
+    numDoc,
+    telefono,
+    email,
+    tipoDocumento,
+    tipoFactura,
+    activoEconomico,
+    ncr,
+    jdeNum
   ) => {
     event.preventDefault();
     request('POST', '/register', {
@@ -56,9 +64,17 @@ export default class AppContent extends React.Component {
       direccion: direccion,
       municipio: municipio,
       numDoc: numDoc,
+      telefono: telefono,
+      email: email,
+      tipoDocumento: tipoDocumento,
+      tipoFactura: tipoFactura,
+      activoEconomico: activoEconomico,
+      ncr: ncr,
+      jdeNum: jdeNum,
     })
       .then((response) => {
         setAuthHeader(response.data.token);
+        this.setState({ numDoc: response.data.numDoc });
         this.setState({ componentToShow: 'messages' });
       })
       .catch((error) => {
@@ -76,7 +92,9 @@ export default class AppContent extends React.Component {
         {this.state.componentToShow === 'login' && (
           <LoginForm onLogin={this.onLogin} onRegister={this.onRegister} />
         )}
-        {this.state.componentToShow === 'messages' && <AuthContent />}
+        {this.state.componentToShow === 'messages' && (
+          <AuthContent numDoc={this.state.numDoc} />
+        )}
       </>
     );
   }
