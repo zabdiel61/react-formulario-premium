@@ -3,6 +3,8 @@ import { request, setAuthHeader } from '../helpers/axios_helper';
 import SignInSide from './LoginForm';
 import RegisterForm from './RegisterForm';
 import AuthContent from './AuthContent';
+import HeaderAuth from './HeaderAuth';
+import HeaderRegister from './HeaderRegister';
 
 function AppContent() {
   const [componentToShow, setComponentToShow] = useState('login');
@@ -65,12 +67,14 @@ function AppContent() {
 
   return (
     <>
+      {componentToShow === 'register' && <HeaderRegister onBack={login} />}
       {componentToShow === 'login' && (
         <SignInSide onLogin={onLogin} showRegisterForm={showRegisterForm} />
       )}
       {componentToShow === 'register' && (
         <RegisterForm onRegister={onRegister} />
       )}
+      {componentToShow === 'messages' && <HeaderAuth onLogout={logout} />}
       {componentToShow === 'messages' && <AuthContent numDoc={numDoc} />}
     </>
   );
