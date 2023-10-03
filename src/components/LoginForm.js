@@ -86,7 +86,7 @@ function SignInSide({ onLogin, showRegisterForm }) {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Iniciar Session
             </Typography>
             <Box
               component="form"
@@ -128,13 +128,17 @@ function SignInSide({ onLogin, showRegisterForm }) {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Iniciar Sesion
               </Button>
 
               <Grid container>
                 <Grid item>
-                  <Link variant="body2" onClick={() => showRegisterForm()}>
-                    {'NO esta registrado? Registrate'}
+                  <Link
+                    href="#"
+                    variant="body2"
+                    onClick={() => showRegisterForm()}
+                  >
+                    {'No esta registrado? Registrate'}
                   </Link>
                 </Grid>
               </Grid>

@@ -36,37 +36,21 @@ function AppContent() {
       });
   };
 
-  const onRegister = (
-    event,
-    tipo,
-    nombre,
-    nombreComercial,
-    direccion,
-    municipio,
-    numDoc,
-    telefono,
-    email,
-    tipoDocumento,
-    tipoFactura,
-    activoEconomico,
-    ncr,
-    jdeNum
-  ) => {
-    event.preventDefault();
+  const onRegister = (formData) => {
     request('POST', '/register', {
-      tipo: tipo,
-      nombre: nombre,
-      nombreComercial: nombreComercial,
-      direccion: direccion,
-      municipio: municipio,
-      numDoc: numDoc,
-      telefono: telefono,
-      email: email,
-      tipoDocumento: tipoDocumento,
-      tipoFactura: tipoFactura,
-      activoEconomico: activoEconomico,
-      ncr: ncr,
-      jdeNum: jdeNum,
+      tipo: formData.tipo,
+      nombre: formData.nombre,
+      nombreComercial: formData.nombreComercial,
+      direccion: formData.direccion,
+      municipio: formData.municipio.value,
+      numDoc: formData.numDoc,
+      telefono: formData.telefono,
+      email: formData.email,
+      tipoDocumento: formData.tipoDocumento.value,
+      tipoFactura: formData.tipoFactura,
+      activoEconomico: formData.activoEconomico.value,
+      ncr: formData.ncr,
+      jdeNum: formData.jdeNum,
     })
       .then((response) => {
         setAuthHeader(response.data.token);
