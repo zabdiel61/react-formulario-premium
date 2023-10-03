@@ -1,46 +1,42 @@
-import * as React from 'react';
-
+import React, { useState } from 'react';
 import { request, setAuthHeader } from '../helpers/axios_helper';
-
-import Buttons from './Buttons';
+import SignInSide from './LoginForm';
+import RegisterForm from './RegisterForm';
 import AuthContent from './AuthContent';
-import WelcomeContent from './WelcomeContent';
-import LoginForm from './LoginForms';
 
-export default class AppContent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      componentToShow: 'welcome',
-    };
-  }
+function AppContent() {
+  const [componentToShow, setComponentToShow] = useState('login');
+  const [numDoc, setNumDoc] = useState(null);
 
-  login = () => {
-    this.setState({ componentToShow: 'login' });
+  const login = () => {
+    setComponentToShow('login');
   };
 
-  logout = () => {
-    this.setState({ componentToShow: 'welcome' });
+  const logout = () => {
+    setComponentToShow('login');
     setAuthHeader(null);
   };
 
-  onLogin = (e, numDoc) => {
-    e.preventDefault();
+  const showRegisterForm = () => {
+    setComponentToShow('register');
+  };
+
+  const onLogin = (formData) => {
     request('POST', '/login', {
-      numDoc: numDoc,
+      numDoc: formData.numDoc,
     })
       .then((response) => {
         setAuthHeader(response.data.token);
-        this.setState({ numDoc: response.data.numDoc });
-        this.setState({ componentToShow: 'messages' });
+        setNumDoc(response.data.numDoc);
+        setComponentToShow('messages');
       })
       .catch((error) => {
         setAuthHeader(null);
-        this.setState({ componentToShow: 'welcome' });
+        setComponentToShow('welcome');
       });
   };
 
-  onRegister = (
+  const onRegister = (
     event,
     tipo,
     nombre,
@@ -74,28 +70,26 @@ export default class AppContent extends React.Component {
     })
       .then((response) => {
         setAuthHeader(response.data.token);
-        this.setState({ numDoc: response.data.numDoc });
-        this.setState({ componentToShow: 'messages' });
+        setNumDoc(response.data.numDoc);
+        setComponentToShow('messages');
       })
       .catch((error) => {
         setAuthHeader(null);
-        this.setState({ componentToShow: 'welcome' });
+        setComponentToShow('welcome');
       });
   };
 
-  render() {
-    return (
-      <>
-        <Buttons login={this.login} logout={this.logout} />
-
-        {this.state.componentToShow === 'welcome' && <WelcomeContent />}
-        {this.state.componentToShow === 'login' && (
-          <LoginForm onLogin={this.onLogin} onRegister={this.onRegister} />
-        )}
-        {this.state.componentToShow === 'messages' && (
-          <AuthContent numDoc={this.state.numDoc} />
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      {componentToShow === 'login' && (
+        <SignInSide onLogin={onLogin} showRegisterForm={showRegisterForm} />
+      )}
+      {componentToShow === 'register' && (
+        <RegisterForm onRegister={onRegister} />
+      )}
+      {componentToShow === 'messages' && <AuthContent numDoc={numDoc} />}
+    </>
+  );
 }
+
+export default AppContent;
