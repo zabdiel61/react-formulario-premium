@@ -5,8 +5,11 @@ import RegisterForm from './RegisterForm';
 import AuthContent from './AuthContent';
 import HeaderAuth from './HeaderAuth';
 import HeaderRegister from './HeaderRegister';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function AppContent() {
+  const [userNotFoundAlertOpen, setUserNotFoundAlertOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState('login');
   const [numDoc, setNumDoc] = useState(null);
 
@@ -23,18 +26,33 @@ function AppContent() {
     setComponentToShow('register');
   };
 
+  const handleAuthResponse = (response) => {
+    if (response.data.token) {
+      setAuthHeader(response.data.token);
+      setNumDoc(response.data.numDoc);
+      setComponentToShow('messages');
+    } else {
+      setAuthHeader(null);
+      setComponentToShow('login');
+    }
+  };
+
   const onLogin = (formData) => {
     request('POST', '/login', {
       numDoc: formData.numDoc,
     })
-      .then((response) => {
-        setAuthHeader(response.data.token);
-        setNumDoc(response.data.numDoc);
-        setComponentToShow('messages');
-      })
+      .then(handleAuthResponse)
       .catch((error) => {
-        setAuthHeader(null);
-        setComponentToShow('welcome');
+        if (error.response.status === 401) {
+          setAuthHeader(null);
+        } else if (
+          error.response.data.message === 'Numero de Documento desconocido'
+        ) {
+          setUserNotFoundAlertOpen(true);
+        } else {
+          setAuthHeader(null);
+          setComponentToShow('login');
+        }
       });
   };
 
@@ -54,15 +72,8 @@ function AppContent() {
       ncr: formData.ncr,
       jdeNum: formData.jdeNum,
     })
-      .then((response) => {
-        setAuthHeader(response.data.token);
-        setNumDoc(response.data.numDoc);
-        setComponentToShow('messages');
-      })
-      .catch((error) => {
-        setAuthHeader(null);
-        setComponentToShow('welcome');
-      });
+      .then(handleAuthResponse)
+      .catch(handleAuthResponse);
   };
 
   return (
@@ -75,7 +86,22 @@ function AppContent() {
         <RegisterForm onRegister={onRegister} />
       )}
       {componentToShow === 'messages' && <HeaderAuth onLogout={logout} />}
-      {componentToShow === 'messages' && <AuthContent numDoc={numDoc} />}
+      {componentToShow === 'messages' && <AuthContent numDoc={numDoc} />}}
+      {userNotFoundAlertOpen && (
+        <Snackbar
+          open={userNotFoundAlertOpen}
+          autoHideDuration={6000}
+          onClose={() => setUserNotFoundAlertOpen(false)}
+        >
+          <MuiAlert
+            onClose={() => setUserNotFoundAlertOpen(false)}
+            severity="error"
+            sx={{ width: '100%' }}
+          >
+            El usuario no existe.
+          </MuiAlert>
+        </Snackbar>
+      )}
     </>
   );
 }

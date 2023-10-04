@@ -39,11 +39,11 @@ function RegisterForm({ onRegister }) {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    if (name === 'tipoFactura') {
-      setFormData({ ...formData, [name]: value, showFields: value === 'CRF' });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({
+      ...formData,
+      [name]: value,
+      showFields: name === 'tipoFactura' && value === 'CRF',
+    });
   };
 
   const handleSubmit = (e) => {

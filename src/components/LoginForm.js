@@ -136,9 +136,12 @@ function SignInSide({ onLogin, showRegisterForm }) {
                   <Link
                     href="#"
                     variant="body2"
-                    onClick={() => showRegisterForm()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      showRegisterForm();
+                    }}
                   >
-                    {'No esta registrado? Registrate'}
+                    {'No está registrado? Regístrese'}
                   </Link>
                 </Grid>
               </Grid>
