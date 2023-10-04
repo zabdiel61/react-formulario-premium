@@ -12,6 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Autocomplete, Link } from '@mui/material';
+import LogoPremium from '../public/img/premium.png';
 
 function Copyright(props) {
   return (
@@ -82,9 +83,25 @@ function SignInSide({ onLogin, showRegisterForm }) {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
+            <Avatar
+              sx={{
+                m: 1,
+                bgcolor: 'white',
+                width: '100px',
+                height: '100px',
+              }}
+            >
+              <img
+                src={LogoPremium}
+                alt="Logo Premium"
+                style={{
+                  width: '100%', // Establecer el ancho al 100% para que la imagen se ajuste al Avatar
+                  height: '100%', // Establecer la altura al 100% para que la imagen se ajuste al Avatar
+                  objectFit: 'cover', // Ajustar la imagen manteniendo la relación de aspecto y cubriendo el espacio
+                }}
+              />
             </Avatar>
+
             <Typography component="h1" variant="h5">
               Iniciar Session
             </Typography>

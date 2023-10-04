@@ -12,6 +12,7 @@ function AppContent() {
   const [userNotFoundAlertOpen, setUserNotFoundAlertOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState('login');
   const [numDoc, setNumDoc] = useState(null);
+  const [idCliente, setIdCliente] = useState(null);
 
   const login = () => {
     setComponentToShow('login');
@@ -30,6 +31,7 @@ function AppContent() {
     if (response.data.token) {
       setAuthHeader(response.data.token);
       setNumDoc(response.data.numDoc);
+      setIdCliente(response.data.id);
       setComponentToShow('messages');
     } else {
       setAuthHeader(null);
@@ -86,7 +88,7 @@ function AppContent() {
         <RegisterForm onRegister={onRegister} />
       )}
       {componentToShow === 'messages' && <HeaderAuth onLogout={logout} />}
-      {componentToShow === 'messages' && <AuthContent numDoc={numDoc} />}}
+      {componentToShow === 'messages' && <AuthContent idCliente={idCliente} />}
       {userNotFoundAlertOpen && (
         <Snackbar
           open={userNotFoundAlertOpen}
