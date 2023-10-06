@@ -18,10 +18,12 @@ import {
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
 
 const defaultTheme = createTheme();
 
-function AuthContent(props) {
+function AuthContent({ idCliente }) {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -59,9 +61,24 @@ function AuthContent(props) {
   };
 
   useEffect(() => {
-    request('GET', `/cliente/${props.idCliente}`, null)
+    request('GET', `/cliente/${idCliente}`, null)
       .then((response) => {
         setData(response.data);
+        setFormData({
+          tipo: response.data.tipo,
+          nombre: response.data.nombre,
+          nombreComercial: response.data.nombreComercial,
+          direccion: response.data.direccion,
+          municipio: response.data.municipio,
+          numDoc: response.data.numDoc,
+          telefono: response.data.telefono,
+          email: response.data.email,
+          tipoDocumento: response.data.tipoDocumento,
+          tipoFactura: response.data.tipoFactura,
+          activoEconomico: response.data.activoEconomico,
+          ncr: response.data.ncr,
+          jdeNum: response.data.jdeNum,
+        });
         setAlertSeverity('success');
         setAlertMessage('Se cargo la informacion correctamente');
         setAlertOpen(true);
@@ -79,17 +96,60 @@ function AuthContent(props) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [props.numDoc]);
+  }, [idCliente]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // onRegister(formData);
+    console.log(formData);
+    request('PUT', `/cliente/${idCliente}`, {
+      tipo: formData.tipo,
+      nombre: formData.nombre,
+      nombreComercial: formData.nombreComercial,
+      direccion: formData.direccion,
+      // municipio: formData.municipio.value,
+      numDoc: formData.numDoc,
+      telefono: formData.telefono,
+      email: formData.email,
+      // tipoDocumento: formData.tipoDocumento.value,
+      tipoFactura: formData.tipoFactura,
+      // activoEconomico: formData.activoEconomico.value,
+      ncr: formData.ncr,
+      jdeNum: formData.jdeNum,
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
     <>
       {isLoading ? (
-        <p>Cargando datos...</p>
+        <ThemeProvider theme={defaultTheme}>
+          <Box
+            sx={{
+              my: 4,
+              mx: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Stack
+              spacing={1}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Skeleton variant="circular" width={40} height={40} />
+              <Skeleton variant="rounded" width={210} height={100} />
+            </Stack>
+          </Box>
+        </ThemeProvider>
       ) : (
         <ThemeProvider theme={defaultTheme}>
           <Box

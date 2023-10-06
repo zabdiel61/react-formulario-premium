@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,11 +8,10 @@ import Checkbox from '@mui/material/Checkbox';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Autocomplete, Link } from '@mui/material';
-import LogoPremium from '../public/img/premium.png';
+import { request } from '../helpers/axios_helper';
 
 function Copyright(props) {
   return (
@@ -39,17 +38,32 @@ function SignInSide({ onLogin, showRegisterForm }) {
     tipoDocumento: '',
     numDoc: '',
   });
+  const [documentTypes, setDocumentTypes] = useState([]);
 
-  const handleChange = (event, value) => {
+  useEffect(() => {
+    getTpDocumentos();
+  }, []);
+
+  const handleChange = (event, newValue) => {
     setFormData({
       ...formData,
-      tipoDocumento: value,
+      tipoDocumento: newValue,
     });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     onLogin(formData);
+  };
+
+  const getTpDocumentos = () => {
+    request('GET', `/getTpDocumentos`, null)
+      .then((response) => {
+        setDocumentTypes(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -62,8 +76,7 @@ function SignInSide({ onLogin, showRegisterForm }) {
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: 'url()',
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light'
@@ -92,16 +105,15 @@ function SignInSide({ onLogin, showRegisterForm }) {
               }}
             >
               <img
-                src={LogoPremium}
+                src={process.env.PUBLIC_URL + '/premium.png'}
                 alt="Logo Premium"
                 style={{
-                  width: '100%', // Establecer el ancho al 100% para que la imagen se ajuste al Avatar
-                  height: '100%', // Establecer la altura al 100% para que la imagen se ajuste al Avatar
-                  objectFit: 'cover', // Ajustar la imagen manteniendo la relación de aspecto y cubriendo el espacio
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
                 }}
               />
             </Avatar>
-
             <Typography component="h1" variant="h5">
               Iniciar Session
             </Typography>
@@ -114,7 +126,7 @@ function SignInSide({ onLogin, showRegisterForm }) {
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={['DUI', 'NIT']}
+                options={documentTypes.map((option) => option.nombre)}
                 value={formData.tipoDocumento}
                 onChange={handleChange}
                 renderInput={(params) => (

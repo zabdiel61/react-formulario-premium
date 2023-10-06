@@ -3,3 +3,10 @@
   max-width: 125px; /* Ajusta el tamaño según tus necesidades */
   height: auto;
 }
+
+/* Por ejemplo, ajustar el ancho en pantallas más grandes */
+@media (min-width: 768px) {
+  .your-container-class {
+    width: 70%; /* Cambiar el ancho en pantallas más grandes */
+  }
+}

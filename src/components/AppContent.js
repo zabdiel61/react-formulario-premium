@@ -10,8 +10,8 @@ import MuiAlert from '@mui/material/Alert';
 
 function AppContent() {
   const [userNotFoundAlertOpen, setUserNotFoundAlertOpen] = useState(false);
+  const [userExitsRegister, setUserExitsRegister] = useState('');
   const [componentToShow, setComponentToShow] = useState('login');
-  const [numDoc, setNumDoc] = useState(null);
   const [idCliente, setIdCliente] = useState(null);
 
   const login = () => {
@@ -27,23 +27,15 @@ function AppContent() {
     setComponentToShow('register');
   };
 
-  const handleAuthResponse = (response) => {
-    if (response.data.token) {
-      setAuthHeader(response.data.token);
-      setNumDoc(response.data.numDoc);
-      setIdCliente(response.data.id);
-      setComponentToShow('messages');
-    } else {
-      setAuthHeader(null);
-      setComponentToShow('login');
-    }
-  };
-
   const onLogin = (formData) => {
     request('POST', '/login', {
       numDoc: formData.numDoc,
     })
-      .then(handleAuthResponse)
+      .then((response) => {
+        setAuthHeader(response.data.token);
+        setIdCliente(response.data.id);
+        setComponentToShow('messages');
+      })
       .catch((error) => {
         if (error.response.status === 401) {
           setAuthHeader(null);
@@ -59,23 +51,54 @@ function AppContent() {
   };
 
   const onRegister = (formData) => {
+    const municipioData = {
+      id: formData.municipio.value,
+    };
+
+    const tipoDocumentoData = {
+      id: formData.tipoDocumento.value,
+    };
+
+    let actividadEconomicaData = null;
+    if (formData.actividadEconomica) {
+      actividadEconomicaData = {
+        id: formData.actividadEconomica.value,
+      };
+    }
+
     request('POST', '/register', {
       tipo: formData.tipo,
+      estado: formData.estado,
       nombre: formData.nombre,
       nombreComercial: formData.nombreComercial,
       direccion: formData.direccion,
-      municipio: formData.municipio.value,
+      municipio: municipioData,
       numDoc: formData.numDoc,
       telefono: formData.telefono,
       email: formData.email,
-      tipoDocumento: formData.tipoDocumento.value,
+      tipoDocumento: tipoDocumentoData,
       tipoFactura: formData.tipoFactura,
-      activoEconomico: formData.activoEconomico.value,
+      actividadEconomica: actividadEconomicaData,
       ncr: formData.ncr,
       jdeNum: formData.jdeNum,
     })
-      .then(handleAuthResponse)
-      .catch(handleAuthResponse);
+      .then((response) => {
+        setAuthHeader(response.data.token);
+        setIdCliente(response.data.id);
+        setComponentToShow('messages');
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          setAuthHeader(null);
+        } else if (
+          error.response.data.message === 'Numero de documento existente'
+        ) {
+          setUserExitsRegister('Numero de Documento existente');
+        } else {
+          setAuthHeader(null);
+          setComponentToShow('login');
+        }
+      });
   };
 
   return (
@@ -85,7 +108,11 @@ function AppContent() {
         <SignInSide onLogin={onLogin} showRegisterForm={showRegisterForm} />
       )}
       {componentToShow === 'register' && (
-        <RegisterForm onRegister={onRegister} />
+        <RegisterForm
+          onRegister={onRegister}
+          showRegisterForm={showRegisterForm}
+          userExitsRegister={userExitsRegister}
+        />
       )}
       {componentToShow === 'messages' && <HeaderAuth onLogout={logout} />}
       {componentToShow === 'messages' && <AuthContent idCliente={idCliente} />}

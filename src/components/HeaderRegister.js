@@ -1,9 +1,9 @@
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Avatar } from '@mui/material';
 
 const HeaderRegister = ({ onBack }) => {
   return (
@@ -18,9 +18,24 @@ const HeaderRegister = ({ onBack }) => {
           <ArrowBackIcon />
         </IconButton>
 
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Logo
-        </Typography>
+        <Avatar
+          sx={{
+            m: 1,
+            bgcolor: 'white',
+            width: '50px',
+            height: '50px',
+          }}
+        >
+          <img
+            src={process.env.PUBLIC_URL + '/premium.png'}
+            alt="Logo Premium"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+            }}
+          />
+        </Avatar>
       </Toolbar>
     </AppBar>
   );
